@@ -29,7 +29,7 @@ class FetchNews extends Command
      */
     public function handle()
     {
-        $no_of_articles = text('How many articles to download?') ?: 0;
+        $no_of_articles = text('How many articles to download?') ?: 10;
 
         $home_page_feed = simplexml_load_string(Http::get('https://feed.laravel-news.com/')->body());
 
