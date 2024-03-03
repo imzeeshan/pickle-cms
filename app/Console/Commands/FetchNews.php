@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Modules\Posts\Entities\Post;
 use Illuminate\Support\Str;
+use Modules\Posts\Entities\Category;
+
 use function Laravel\Prompts\text;
 
 class FetchNews extends Command
@@ -35,6 +37,14 @@ class FetchNews extends Command
 
         // Delete previously fetched articles to avoid duplicacy
         Post::where('tags', '=', 'laravel-news')->delete();
+
+        // Create a default category, if there are no categories in the system 
+        if (Category::get()->count() == 0) {
+            $category            = new Category();
+            $category->name      = 'News';
+            $category->parent_id = 0;
+            $category->save();
+        }
 
         $count_of_articles = 0;
 
