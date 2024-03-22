@@ -17,7 +17,7 @@ class FetchNews extends Command
      *
      * @var string
      */
-    protected $signature = 'fetch-news {no_of_articles?}';
+    protected $signature = 'fetch-news {no_of_articles=10}';
 
     /**
      * The console command description.
@@ -31,8 +31,7 @@ class FetchNews extends Command
      */
     public function handle()
     {
-        $no_of_articles = text('How many articles to download?') ?: 10;
-
+        $no_of_articles = 10;
         $home_page_feed = simplexml_load_string(Http::get('https://feed.laravel-news.com/')->body());
 
         // Delete previously fetched articles to avoid duplicacy
