@@ -2,11 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Notifications\NewsUpdated;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Modules\Posts\Entities\Post;
 use Illuminate\Support\Str;
 use Modules\Posts\Entities\Category;
+use Modules\User\Entities\User;
+use Illuminate\Support\Facades\Notification;
 
 use function Laravel\Prompts\text;
 
@@ -31,8 +34,9 @@ class FetchNews extends Command
      */
     public function handle()
     {
-        $no_of_articles = 10;
-        $home_page_feed = simplexml_load_string(Http::get('https://feed.laravel-news.com/')->body());
+        $users_to_notify = User::where('name', 'Admin')->get();
+        $no_of_articles  = 10;
+        $home_page_feed  = simplexml_load_string(Http::get('https://feed.laravel-news.com/')->body());
 
         // Delete previously fetched articles to avoid duplicacy
         Post::where('tags', '=', 'laravel-news')->delete();
@@ -63,5 +67,8 @@ class FetchNews extends Command
                 echo $post->title . "\n";
             }
         }
+
+        // Send out the notification 
+        Notification::send($users_to_notify, new NewsUpdated);
     }
 }
